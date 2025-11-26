@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  backend:
+    build: ./backend
+    container_name: apod-backend
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./backend/.env
+    restart: always
+
+  frontend:
+    build: ./frontend
+    container_name: apod-frontend
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend
+    restart: always

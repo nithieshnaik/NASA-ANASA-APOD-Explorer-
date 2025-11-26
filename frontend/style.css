@@ -23,7 +23,7 @@ body {
 /* ===================== HEADER ===================== */
 .header {
     text-align: center;
-    margin-bottom: 48px;
+    margin-bottom: 30px;
 }
 
 .header h1 {
@@ -424,4 +424,120 @@ body {
     .modal-content {
         margin: 20px 0;
     }
+}
+
+
+.light-mode body {
+  background: #f7f7f7 !important;
+  color: #111 !important;
+}
+
+.light-mode .header h1 {
+  background: none;
+  -webkit-text-fill-color: #333 !important;
+}
+
+.light-mode .date-picker-wrapper,
+.light-mode .view-toggle,
+.light-mode .gallery-item,
+.light-mode .featured-apod,
+.light-mode .modal-content {
+  background: #ffffff !important;
+  border-color: #ddd !important;
+}
+
+.light-mode .featured-title,
+.light-mode .gallery-title,
+.light-mode .modal-title {
+  color: #111 !important;
+}
+
+.light-mode .featured-explanation,
+.light-mode .gallery-date,
+.light-mode .modal-explanation {
+  color: #444 !important;
+}
+
+.light-mode .btn-primary {
+  background: #4c6ef5 !important;
+}
+
+.light-mode .modal {
+  background: rgba(0,0,0,0.4) !important;
+}
+
+/* ------------------ Force readable control text in Light Mode ------------------ */
+.light-mode,
+.light-mode body {
+  color: #111 !important;
+}
+
+/* Date picker label + input text */
+.light-mode .date-picker-wrapper label,
+.light-mode .date-picker-wrapper input[type="date"] {
+  color: #111 !important;
+  background: #fff !important;
+  border-color: #e6e6e6 !important;
+}
+
+/* Make the calendar icon visible on light background */
+.light-mode .date-picker-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: none !important;
+}
+
+/* View toggle buttons - default and active states */
+.light-mode .view-toggle button {
+  color: #111 !important;
+  background: rgba(255,255,255,0.9) !important;
+  border: 1px solid #e6e6e6 !important;
+}
+.light-mode .view-toggle button.active {
+  color: #fff !important;
+  background: #4c6ef5 !important; /* keep primary look */
+}
+
+/* Generic buttons inside controls */
+.light-mode .btn,
+.light-mode .btn-primary {
+  color: #fff !important;
+}
+
+/* If buttons use text color instead of background */
+.light-mode .btn:not(.btn-primary) {
+  color: #111 !important;
+  background: #fff !important;
+  border-color: #e6e6e6 !important;
+}
+
+/* Ensure modal-close color visible */
+.light-mode .modal-close {
+  background: #fff !important;
+  color: #111 !important;
+  border: 1px solid #e6e6e6 !important;
+}
+
+/* Small text in controls like .gallery-date */
+.light-mode .gallery-date,
+.light-mode .featured-date {
+  color: #555 !important;
+}
+
+/* Inputs/controls focus states */
+.light-mode .date-picker-wrapper input[type="date"]:focus,
+.light-mode .view-toggle button:focus,
+.light-mode .btn:focus {
+  outline: 2px solid rgba(76,110,245,0.25) !important;
+  box-shadow: 0 0 0 4px rgba(76,110,245,0.08) !important;
+}
+
+/* Safety: ensure placeholder / small text are dark */
+.light-mode ::placeholder {
+  color: #666 !important;
+}
+
+/* Make sure SVG/icons (if any) invert appropriately */
+.light-mode svg,
+.light-mode .icon {
+  fill: #111 !important;
+  color: #111 !important;
 }

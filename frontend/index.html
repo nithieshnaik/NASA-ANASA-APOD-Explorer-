@@ -1,100 +1,102 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NASA APOD Explorer</title>
-<link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NASA APOD Explorer</title>
+  <link rel="stylesheet" href="./style.css">
 
 
-<!-- SDKs (optional for your environment) -->
-<script src="/_sdk/element_sdk.js"></script>
-<script src="/_sdk/data_sdk.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
+  <!-- SDKs (optional for your environment) -->
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-<style>
-/* ---------- (YOUR CSS — UNMODIFIED) ---------- */
-body {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
-    color: #ffffff;
-    min-height: 100%;
-    width: 100%;
-}
+  <style>
+    /* ---------- (YOUR CSS — UNMODIFIED) ---------- */
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont,
+        'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+      color: #ffffff;
+      min-height: 100%;
+      width: 100%;
+    }
 
-* { box-sizing: border-box; }
-
-
-</style>
+    * {
+      box-sizing: border-box;
+    }
+  </style>
 
 </head>
 
 <body>
-<div class="app-container">
+  <div class="app-container">
 
     <!-- HEADER -->
     <header class="header">
-        <h1 id="app-title">NASA APOD Explorer</h1>
-        <p id="app-subtitle">
-            Discover the cosmos through NASA's Astronomy Picture of the Day
-        </p>
+      <h1 id="app-title">NASA APOD Explorer</h1>
+      <p id="app-subtitle">
+        Discover the cosmos through NASA's Astronomy Picture of the Day
+      </p>
+      <button id="theme-toggle" class="btn btn-primary" style="margin-top:10px;">
+        Toggle Dark/Light
+      </button>
     </header>
 
     <!-- CONTROLS -->
     <div class="controls">
 
-        <div class="date-picker-wrapper">
-            <label for="date-picker">Select Date:</label>
-            <input type="date" id="date-picker" max="">
-        </div>
+      <div class="date-picker-wrapper">
+        <label for="date-picker">Select Date:</label>
+        <input type="date" id="date-picker" max="">
+      </div>
 
-        <div class="view-toggle">
-            <button class="active" data-view="featured">Featured</button>
-            <button data-view="gallery">Gallery</button>
-        </div>
+      <div class="view-toggle">
+        <button class="active" data-view="featured">Featured</button>
+        <button data-view="gallery">Gallery</button>
+      </div>
 
     </div>
 
     <!-- MAIN CONTENT AREA -->
     <main class="main-content">
 
-        <!-- Featured View -->
-        <div id="featured-view" class="featured-view">
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <p id="loading-text">Loading today's cosmic wonder...</p>
-            </div>
+      <!-- Featured View -->
+      <div id="featured-view" class="featured-view">
+        <div class="loading">
+          <div class="loading-spinner"></div>
+          <p id="loading-text">Loading today's cosmic wonder...</p>
         </div>
+      </div>
 
-        <!-- Gallery -->
-        <div id="gallery-view" class="gallery-view" style="display:none;">
-            <div id="gallery-grid" class="gallery"></div>
-        </div>
+      <!-- Gallery -->
+      <div id="gallery-view" class="gallery-view" style="display:none;">
+        <div id="gallery-grid" class="gallery"></div>
+      </div>
 
     </main>
 
-</div>
+  </div>
 
-<!-- MODAL -->
-<div id="modal" class="modal">
+  <!-- MODAL -->
+  <div id="modal" class="modal">
     <div class="modal-content">
-        <button class="modal-close" id="modal-close">×</button>
-        <div id="modal-body"></div>
+      <button class="modal-close" id="modal-close">×</button>
+      <div id="modal-body"></div>
     </div>
-</div>
+  </div>
 
 
-<!-- ======================================================
-     BACKEND-INTEGRATED JAVASCRIPT  💥 100% WORKING
-====================================================== -->
-<script>
+  
+  <script>
 
     /* ----------------------- BACKEND API CONFIG ----------------------- */
-    const API_BASE = "http://localhost:4000/api/apod";  
+    const API_BASE = "http://localhost:4000/api/apod";
     const CACHE_EXPIRY_MS = 3600000;
     const MAX_CACHE_SIZE = 50;
 
@@ -105,73 +107,73 @@ body {
     function cacheKey(date) { return "apod_" + date; }
 
     function getCached(date) {
-        const key = cacheKey(date);
-        const entry = cache.get(key);
-        if (!entry) return null;
-        if (Date.now() - entry.time > CACHE_EXPIRY_MS) {
-            cache.delete(key);
-            return null;
-        }
-        return entry.data;
+      const key = cacheKey(date);
+      const entry = cache.get(key);
+      if (!entry) return null;
+      if (Date.now() - entry.time > CACHE_EXPIRY_MS) {
+        cache.delete(key);
+        return null;
+      }
+      return entry.data;
     }
 
     function setCached(date, data) {
-        if (cache.size >= MAX_CACHE_SIZE) {
-            const first = cache.keys().next().value;
-            cache.delete(first);
-        }
-        cache.set(cacheKey(date), { data, time: Date.now() });
+      if (cache.size >= MAX_CACHE_SIZE) {
+        const first = cache.keys().next().value;
+        cache.delete(first);
+      }
+      cache.set(cacheKey(date), { data, time: Date.now() });
     }
 
 
     /* ----------------------- API CALLS (BACKEND) ----------------------- */
 
     async function fetchAPOD(date) {
-        const cached = getCached(date || "today");
-        if (cached) return cached;
+      const cached = getCached(date || "today");
+      if (cached) return cached;
 
-        const url = date
-            ? `${API_BASE}/date?date=${date}`
-            : `${API_BASE}/today`;
+      const url = date
+        ? `${API_BASE}/date?date=${date}`
+        : `${API_BASE}/today`;
 
-        const res = await fetch(url);
-        const json = await res.json();
-        const apod = json.data;
+      const res = await fetch(url);
+      const json = await res.json();
+      const apod = json.data;
 
-        setCached(apod.date, apod);
-        return apod;
+      setCached(apod.date, apod);
+      return apod;
     }
 
     async function fetchAPODRange(start, end) {
-        const url = `${API_BASE}/range?start=${start}&end=${end}`;
-        const res = await fetch(url);
-        const json = await res.json();
+      const url = `${API_BASE}/range?start=${start}&end=${end}`;
+      const res = await fetch(url);
+      const json = await res.json();
 
-        json.data.forEach(item => setCached(item.date, item));
-        return json.data;
+      json.data.forEach(item => setCached(item.date, item));
+      return json.data;
     }
 
 
     /* ----------------------- RENDERING HELPERS ----------------------- */
 
     function formatDate(d) {
-        return new Date(d).toLocaleDateString("en-US", {
-            year: "numeric", month: "long", day: "numeric"
-        });
+      return new Date(d).toLocaleDateString("en-US", {
+        year: "numeric", month: "long", day: "numeric"
+      });
     }
 
     function mediaElement(apod) {
-        if (apod.media_type === "video") {
-            return `<iframe src="${apod.url}" allowfullscreen></iframe>`;
-        }
-        return `<img src="${apod.url}" />`;
+      if (apod.media_type === "video") {
+        return `<iframe src="${apod.url}" allowfullscreen></iframe>`;
+      }
+      return `<img src="${apod.url}" />`;
     }
 
 
     /* ----------------------- FEATURED VIEW ----------------------- */
 
     function renderFeatured(apod) {
-        document.getElementById("featured-view").innerHTML = `
+      document.getElementById("featured-view").innerHTML = `
             <div class="featured-apod">
                 <div class="featured-image-container">
                     ${mediaElement(apod)}
@@ -181,7 +183,7 @@ body {
                     <h2 class="featured-title">${apod.title}</h2>
                     <p class="featured-explanation">${apod.explanation}</p>
                     ${apod.copyright ?
-                      `<p class="featured-copyright">© ${apod.copyright}</p>` : ""}
+          `<p class="featured-copyright">© ${apod.copyright}</p>` : ""}
                     <div class="featured-actions">
                         <button class="btn btn-primary"
                             onclick="openModal('${apod.date}')">
@@ -197,7 +199,7 @@ body {
     /* ----------------------- GALLERY VIEW ----------------------- */
 
     function renderGallery(list) {
-        document.getElementById("gallery-grid").innerHTML = list.map(apod => `
+      document.getElementById("gallery-grid").innerHTML = list.map(apod => `
             <div class="gallery-item" onclick="openModal('${apod.date}')">
                 <div class="gallery-image-container">${mediaElement(apod)}</div>
                 <div class="gallery-content">
@@ -212,15 +214,15 @@ body {
     /* ----------------------- MODAL ----------------------- */
 
     async function openModal(date) {
-        const modal = document.getElementById("modal");
-        const body = document.getElementById("modal-body");
+      const modal = document.getElementById("modal");
+      const body = document.getElementById("modal-body");
 
-        modal.classList.add("active");
-        body.innerHTML = `<div class="loading">Loading...</div>`;
+      modal.classList.add("active");
+      body.innerHTML = `<div class="loading">Loading...</div>`;
 
-        const apod = await fetchAPOD(date);
+      const apod = await fetchAPOD(date);
 
-        body.innerHTML = `
+      body.innerHTML = `
             <div class="modal-image-container">${mediaElement(apod)}</div>
             <div class="modal-body">
                 <div class="modal-date">${formatDate(apod.date)}</div>
@@ -231,66 +233,66 @@ body {
     }
 
     document.getElementById("modal-close").onclick = () => {
-        document.getElementById("modal").classList.remove("active");
+      document.getElementById("modal").classList.remove("active");
     };
 
 
     /* ----------------------- UI CONTROLS ----------------------- */
 
     function initDatePicker() {
-        const picker = document.getElementById("date-picker");
-        const today = new Date().toISOString().split("T")[0];
+      const picker = document.getElementById("date-picker");
+      const today = new Date().toISOString().split("T")[0];
 
-        picker.value = today;
-        picker.max = today;
+      picker.value = today;
+      picker.max = today;
 
-        picker.onchange = e => loadFeatured(e.target.value);
+      picker.onchange = e => loadFeatured(e.target.value);
     }
 
     function initViewToggle() {
-        document.querySelectorAll(".view-toggle button").forEach(btn => {
-            btn.onclick = () => {
-                document.querySelectorAll(".view-toggle button")
-                    .forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".view-toggle button").forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll(".view-toggle button")
+            .forEach(b => b.classList.remove("active"));
 
-                btn.classList.add("active");
+          btn.classList.add("active");
 
-                const view = btn.dataset.view;
+          const view = btn.dataset.view;
 
-                document.getElementById("featured-view").style.display =
-                    view === "featured" ? "block" : "none";
+          document.getElementById("featured-view").style.display =
+            view === "featured" ? "block" : "none";
 
-                document.getElementById("gallery-view").style.display =
-                    view === "gallery" ? "block" : "none";
+          document.getElementById("gallery-view").style.display =
+            view === "gallery" ? "block" : "none";
 
-                if (view === "featured") loadFeatured();
-                else loadGallery();
-            };
-        });
+          if (view === "featured") loadFeatured();
+          else loadGallery();
+        };
+      });
     }
 
 
     /* ----------------------- LOADERS ----------------------- */
 
     async function loadFeatured(date) {
-        const view = document.getElementById("featured-view");
-        view.innerHTML = `<div class="loading"><div class="loading-spinner"></div></div>`;
+      const view = document.getElementById("featured-view");
+      view.innerHTML = `<div class="loading"><div class="loading-spinner"></div></div>`;
 
-        const apod = await fetchAPOD(date);
-        renderFeatured(apod);
+      const apod = await fetchAPOD(date);
+      renderFeatured(apod);
     }
 
     async function loadGallery() {
-        const grid = document.getElementById("gallery-grid");
-        grid.innerHTML = `<div class="loading">Loading gallery...</div>`;
+      const grid = document.getElementById("gallery-grid");
+      grid.innerHTML = `<div class="loading">Loading gallery...</div>`;
 
-        const today = new Date();
-        const end = today.toISOString().split("T")[0];
-        const start = new Date(today - 14*24*3600*1000)
-            .toISOString().split("T")[0];
+      const today = new Date();
+      const end = today.toISOString().split("T")[0];
+      const start = new Date(today - 14 * 24 * 3600 * 1000)
+        .toISOString().split("T")[0];
 
-        const list = await fetchAPODRange(start, end);
-        renderGallery(list.reverse());
+      const list = await fetchAPODRange(start, end);
+      renderGallery(list.reverse());
     }
 
 
@@ -299,7 +301,28 @@ body {
     initViewToggle();
     loadFeatured();
 
-</script>
+
+    const root = document.documentElement;
+    const toggleBtn = document.getElementById("theme-toggle");
+
+    if (localStorage.getItem("theme") === "light") {
+      root.classList.add("light-mode");
+    }
+
+    toggleBtn.onclick = () => {
+      root.classList.toggle("light-mode");
+
+      if (root.classList.contains("light-mode")) {
+        localStorage.setItem("theme", "light");
+      } else {
+        localStorage.removeItem("theme");
+      }
+    };
+
+
+
+  </script>
 
 </body>
+
 </html>
